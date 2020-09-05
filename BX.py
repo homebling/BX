@@ -38,13 +38,15 @@ plt.savefig('system1.png', bbox_inches='tight')
 plt.show()
 '''
 
-'''# 年龄分段统计用户数量
+'''
+# 年龄分段统计用户数量
 users.Age.hist(bins=[0, 10, 20, 30, 40, 50, 100])
 plt.title('Age Distribution\n')
 plt.xlabel('Age')
 plt.ylabel('Count')
 plt.savefig('system2.png', bbox_inches='tight')
-plt.show()'''
+plt.show()
+'''
 
 # 基于评分数量的推荐方法
 # 根据ISBN统计每本书的总评分，找到评分最高的书籍
