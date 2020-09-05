@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 # 读取三表数据
-books = pd.read_csv('BX-Books.csv', sep=';', error_bad_lines=False, encoding="latin-1")
+books = pd.read_csv('BX-Books.csv', sep=';', error_bad_lines=False, encoding="latin-1",low_memory=False)
 books.columns = ['ISBN', 'bookTitle', 'bookAuthor', 'yearOfPublication', 'publisher', 'imageUrlS', 'imageUrlM', 'imageUrlL']
 users = pd.read_csv('BX-Users.csv', sep=';', error_bad_lines=False, encoding="latin-1")
 users.columns = ['userID', 'Location', 'Age']
@@ -18,15 +18,6 @@ print(ratings.shape)
 print(list(ratings.columns))
 print(ratings.head())
 
-'''# 根据评分画图
-plt.rc("font", size=15)
-ratings.bookRating.value_counts(sort=False).plot(kind='bar')
-plt.title('Rating Distribution\n')
-plt.xlabel('Rating')
-plt.ylabel('Count')
-plt.savefig('system1.png', bbox_inches='tight')
-plt.show()'''
-
 # 统计书籍表和用户表
 print(books.shape)
 print(list(books.columns))
@@ -36,6 +27,17 @@ print(users.shape)
 print(list(users.columns))
 print(users.head())
 
+'''
+# 根据评分画图
+plt.rc("font", size=15)
+ratings.bookRating.value_counts(sort=False).plot(kind='bar')
+plt.title('Rating Distribution\n')
+plt.xlabel('Rating')
+plt.ylabel('Count')
+plt.savefig('system1.png', bbox_inches='tight')
+plt.show()
+'''
+
 '''# 年龄分段统计用户数量
 users.Age.hist(bins=[0, 10, 20, 30, 40, 50, 100])
 plt.title('Age Distribution\n')
@@ -44,17 +46,20 @@ plt.ylabel('Count')
 plt.savefig('system2.png', bbox_inches='tight')
 plt.show()'''
 
-# 根据ISBN统计每本书的总评分
+# 基于评分数量的推荐方法
+# 根据ISBN统计每本书的总评分，找到评分最高的书籍
 rating_count = pd.DataFrame(ratings.groupby('ISBN')['bookRating'].count())
 print(rating_count.sort_values('bookRating', ascending=False).head())
-
-
-most_rated_books = pd.DataFrame(['0971880107', '0316666343', '0385504209', '0060928336', '0312195516'], index=np.arange(5), columns=['ISBN'])
+most_rated_books = pd.DataFrame(['0971880107', '0316666343', '0385504209', '0060928336', '0312195516'],
+                                index=np.arange(5), columns=['ISBN'])
 print(most_rated_books)
+# 根据ISBN找书籍的信息，连接两表
 most_rated_books_summary = pd.merge(most_rated_books, books, on='ISBN')
 print(most_rated_books_summary)
-'''
 
+
+# 基于相关性的推荐方法
+'''
 average_rating = pd.DataFrame(ratings.groupby('ISBN')['bookRating'].mean())
 average_rating['ratingCount'] = pd.DataFrame(ratings.groupby('ISBN')['bookRating'].count())
 average_rating.sort_values('ratingCount', ascending=False).head()
